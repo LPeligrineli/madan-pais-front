@@ -1,0 +1,30 @@
+@font-face {
+  font-family: 'adlery';
+  src: url('/fonts/adlery.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'dreaming-outloud';
+  src: url('/fonts/dreaming-outloud-regular.otf');       
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'intro-script-demo';
+  src: url('/fonts/intro-script-demo-medium.otf');       
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'lovelo-black';
+  src: url('/fonts/lovelo-black.otf');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'quiche-fine';
+  src: url('/fonts/quiche-fine-bold.ttf');    
+  font-weight: normal;
+  font-style: normal;
+}
