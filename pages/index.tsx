@@ -1,37 +1,27 @@
 import type { NextPage } from 'next';
-import { Container, Grid, Input, Radio } from '@mui/material';
+import { Button, Container, Grid, Input, Radio } from '@mui/material';
 import Image from 'next/image';
 import styles from './styles.module.css';
 import { useEffect, useState } from 'react';
-import Parse from 'parse';
+import api from './api/api'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css';
+import { captureScreenshotAndDownload } from '../utils/printScreen';
+import generateRandomHash from '../utils/hash';
+import { fontStyle } from '../enum/font_styles';
+
 
 const Home: NextPage = () => {
   const [cupText, setCupText] = useState<string>('Amor');
   const [selectedValue, setSelectedValue] = useState<string>('');
-  const [font, setFont] = useState<string>('');
+  const [font, setFont] = useState(fontStyle.ADLERY);
 
   const data = {
-    name: cupText,
-    font: font,
+    hash: generateRandomHash(),
+    nome: cupText,
+    fonte: selectedValue,
   };
 
-  Parse.initialize("ifyXZVLs0DCNhFGgtrtoGwja8Q5S1BuiMBc7rXxO", "G92lo6ZoWozuKv6bXLk0k2ndvIo78JZTP9rX6UMM");
-  Parse.serverURL = 'https://parseapi.back4app.com/';
-
-  useEffect(() => {
-
-    const Options = Parse.Object.extend('opcao');
-    const query = new Parse.Query(Options);
-    query.find().then((results: any) => {
-      results.forEach((result: any) => {
-        console.log(result.get('name'));
-        console.log(result.get('font'));
-      }
-      );
-    }).catch((error: any) => {
-      console.error('Erro ao buscar as tarefas: ', error);
-    });
-  }, []);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCupText(event.target.value);
@@ -44,12 +34,12 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     const fontStyles: any = {
-      adlery: styles.font_adlery,
-      'dreaming-outloud': styles.font_dreaming_outloud,
-      'intro-script-demo': styles.font_intro_script_demo,
-      'lovelo-black': styles.font_lovelo_black,
-      'quiche-fine': styles.font_quiche_fine,
-      sweetyhearts: styles.font_sweetyhearts,
+      adlery: fontStyle.ADLERY,
+      'dreaming-outloud': fontStyle.DREAMING_OUTLOUD,
+      'intro-script-demo': fontStyle.INTRO_SCRIPT,
+      'lovelo-black': fontStyle.LOVELO_BLACK,
+      'quiche-fine': fontStyle.QUICHE_FINE,
+      sweetyhearts: fontStyle.SWEETYHEARTS,
     };
 
     const selectedFont = fontStyles[selectedValue] || styles.font_adlery;
@@ -58,8 +48,25 @@ const Home: NextPage = () => {
 
   const onsubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    if (!selectedValue) {
+      toast.warn("Escolha uma fonte");
+      return;
+    }
+    if (!cupText) {
+      toast.warn("Digite um texto");
+      return;
+    }
+    api.post('zxqc6tg82up91', data)
+      .then((_) => {
+        toast.success("Solicitação incluida com sucesso!");
+        captureScreenshotAndDownload(data.nome, data.hash);
+      }
+      ).catch((error) => {
+        toast.error(error);
+      }
+      );
   };
+
 
   return (
     <Container>
@@ -148,10 +155,11 @@ const Home: NextPage = () => {
                 </Grid>
               </Grid>
             </div>
-            <button type="submit">Enviar</button>
+            <Button variant="contained" color="primary" type="submit" fullWidth>Enviar</Button>
           </form>
         </Grid>
       </Grid>
+      <ToastContainer />
     </Container>
   );
 };
